@@ -1,13 +1,20 @@
 import Collection from "@/components/shared/Collection";
+import { DeleteConfirmation } from "@/components/shared/DeleteConfirmation";
+import { Button } from "@/components/ui/button";
 import {
   getEventById,
   getRelatedEventsByCategory,
 } from "@/lib/actions/event.actions";
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
+import Link from "next/link";
 
-const EventDetails = async ({ params: { id }, searchParams }: SearchParamProps) => {
+const EventDetails = async ({
+  params: { id },
+  searchParams,
+}: SearchParamProps) => {
   const event = await getEventById(id);
 
   const relatedEvents = await getRelatedEventsByCategory({
@@ -15,6 +22,11 @@ const EventDetails = async ({ params: { id }, searchParams }: SearchParamProps) 
     eventId: event._id,
     page: searchParams.page as string,
   });
+
+  const { sessionClaims } = auth();
+  const userId = sessionClaims?.userId as string;
+
+  const isEventCreator = userId === event.organizer._id.toString();
 
   return (
     <>
@@ -93,6 +105,24 @@ const EventDetails = async ({ params: { id }, searchParams }: SearchParamProps) 
                 {event.url}
               </p>
             </div>
+
+            {isEventCreator && (
+              <div className="flex flex-row gap-2">
+                <div className="rounded-xl bg-white px-4 py-2.5 shadow-sm transition-all">
+                  <Link href={`/events/${event._id}/update`}>
+                    <Image
+                      src="/assets/icons/edit.svg"
+                      alt="edit"
+                      width={20}
+                      height={20}
+                    />
+                  </Link>
+                </div>
+                <div className="rounded-xl bg-white px-4 py-2.5 shadow-sm transition-all">
+                  <DeleteConfirmation eventId={event._id} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
