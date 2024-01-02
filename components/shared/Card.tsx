@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import DeleteConfirmation from "./DeleteConfirmation";
+import { DeleteConfirmation } from "./DeleteConfirmation";
 
 type CardProps = {
   event: IEvent;
@@ -59,9 +59,9 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
         </p>
 
         {/* <Link href={`/events/${event._id}`}> */}
-          <p className="p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black">
+          <Link href={`/events/${event._id}`} className="p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black">
             {event.title}
-          </p>
+          </Link>
         {/* </Link> */}
 
         <div className="flex-between w-full">
