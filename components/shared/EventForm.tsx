@@ -108,7 +108,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       }
     }
   }
-// Here 4:12:0
+
   return (
     <Form {...form}>
       <form
